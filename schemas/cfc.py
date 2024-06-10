@@ -12,7 +12,7 @@ class CfcSchema(BaseModel):
     nome: str = "Auto Escola de Jacarepagua"
     cnpj: str = "70.982.550/0001-39"
     status: bool = True
-    regiao:str = "Jacarepagua"
+    cep:str = "20780-200"
 
 #estrutura get apenas por codigo    
 class CfcBuscaSchema(BaseModel):
@@ -34,7 +34,7 @@ def apresenta_cfcs(cfcs:List[Cfc]):
             "nome": cfc.nome,
             "cnpj": cfc.cnpj,
             "status": cfc.status,
-            "regiao": cfc.regiao 
+            "cep": cfc.cep 
         })  
                                    
     return{"cfcs": result}
@@ -46,10 +46,33 @@ class CfcViewSchema(BaseModel):
     nome:str = "Auto Escola Sem Nome"
     cnpj:str = "43515658000149"
     status = True
-    regiao = "Bairro"
+    cep = "20780-200"
     # ultima_atualizacao = datetime.now()
     instutores: List[InstrutorListagemSchema]
     carros:List[CarroViewSchema]
+    
+    
+class CfcViewSchemaGet(BaseModel):
+    """ Define como uma cfc será retornada: cfc + instrutor + carro. """
+    id: int = 1
+    codigo: str = "ab0000"
+    nome: str = "Auto Escola Sem Nome"
+    cnpj: str = "43515658000149"
+    status: bool = True
+    regiao: str = "Bairro"
+    cep: str = "20780-200"
+    logradouro: str = "Praça da Sé"
+    complemento: str = "lado ímpar"
+    bairro: str = "Sé"
+    localidade: str = "São Paulo"
+    uf: str = "SP"
+    ibge: str = "3550308"
+    gia: str = "1004"
+    ddd: str = "11"
+    siafi: str = "7107"
+    ultima_atualizacao: datetime = datetime.now()
+    instrutores: List[InstrutorListagemSchema]
+    carros: List[CarroViewSchema]   
     
     
     
@@ -65,12 +88,21 @@ class CfcDelSchema(BaseModel):
 def apresenta_cfc(cfc: Cfc):
     """ Retorna uma representação da cfc seguindo o schema definido em CfcViewSchema. """
     return{
-        "id":cfc.id,
+        "id": cfc.id,
         "codigo": cfc.codigo,
-        "nome":cfc.nome,
-        "cnpj":cfc.cnpj,
-        "status":cfc.status,
-        "regiao":cfc.regiao,
+        "nome": cfc.nome,
+        "cnpj": cfc.cnpj,
+        "status": cfc.status,
+        "cep": cfc.cep,
+        "logradouro": cfc.logradouro,
+        "complemento": cfc.complemento,
+        "bairro": cfc.bairro,
+        "localidade": cfc.localidade,
+        "uf": cfc.uf,
+        "ibge": cfc.ibge,
+        "gia": cfc.gia,
+        "ddd": cfc.ddd,
+        "siafi": cfc.siafi,
         "ultima_atualizacao": cfc.ultima_atualizacao,
         "instrutores": [{"id": i.id , "cpf":i.cpf , "nome":i.nome , "aula": i.aula
                          , "status":i.status , "ultima_atualizacao": i.ultima_atualizacao} for i in cfc.instrutores],
@@ -89,4 +121,4 @@ class CfcListagemSchema(BaseModel):
  nome: str = "Auto Escola de Jacarepagua"
  cnpj: str = "70.982.550/0001-39"
  status: bool = True
- regiao:str = "Jacarepagua"
+ cep:str = "20780-200"

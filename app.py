@@ -2,6 +2,7 @@ from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect, request
 from urllib.parse import unquote
 from sqlalchemy.exc import IntegrityError
+import requests
 
 from flask_cors import CORS
 
@@ -26,13 +27,37 @@ def add_cfc(form: CfcSchema):
 
     Retorna uma representação das auto escolas e instrutor e carros associados.
     """
-    cfc = Cfc(
-        codigo=form.codigo,
-        nome=form.nome,
-        cnpj=form.cnpj,
-        status=form.status,
-        regiao = form.regiao)        
+    
+    # Chamando a API ViaCEP para obter detalhes do endereço
+    cep = form.cep.replace('-', '')  # Remover qualquer traço do CEP
+    via_cep_url = f"https://viacep.com.br/ws/{cep}/json/"
+    
     try:
+        response = requests.get(via_cep_url)
+        response.raise_for_status()  # Levanta um erro se a solicitação falhar
+        
+        address_data = response.json()
+        
+        if "erro" in address_data:
+            return {"message": "CEP inválido :/"}, 400
+            
+        cfc = Cfc(
+            codigo=form.codigo,
+            nome=form.nome,
+            cnpj=form.cnpj,
+            status=form.status,
+            cep=form.cep,
+            logradouro=address_data.get("logradouro"),
+            complemento=address_data.get("complemento"),
+            bairro=address_data.get("bairro"),
+            localidade=address_data.get("localidade"),
+            uf=address_data.get("uf"),
+            ibge=address_data.get("ibge"),
+            gia=address_data.get("gia"),
+            ddd=address_data.get("ddd"),
+            siafi=address_data.get("siafi")
+        )     
+
         # criando conexão com a base
         session = Session()
         # adicionando produto
@@ -41,6 +66,11 @@ def add_cfc(form: CfcSchema):
         session.commit()
         return apresenta_cfc(cfc), 200
 
+    except requests.RequestException as e:
+        # caso um erro na solicitação HTTP
+        error_msg = "Não foi possível obter detalhes do endereço :/"
+        return {"message": error_msg}, 400
+    
     except IntegrityError as e:
         # como a duplicidade do nome é a provável razão do IntegrityError
         error_msg = "auto escola de mesmo nome já salvo na base :/"
@@ -74,7 +104,7 @@ def get_cfcs():
 
 #getbycod
 @app.get('/cfc/<codigo>', tags=[cfc_tag],
-         responses={"200": CfcViewSchema, "404": ErrorSchema})
+         responses={"200": CfcViewSchemaGet, "404": ErrorSchema})
 def get_cfc(query: CfcBuscaSchema):
     """Faz a busca por uma auto escola a partir do codigo da auto escola
 
@@ -148,13 +178,39 @@ def update_cfc(query:CfcPutSchema,form: CfcSchema ):
     cfc.nome = form.nome
     cfc.cnpj = form.cnpj
     cfc.status = form.status
-    cfc.regiao = form.regiao
+    cfc.cep = form.cep
+    
+        # Chamando a API ViaCEP para obter detalhes do endereço
+    cep = form.cep.replace('-', '')  # Remover qualquer traço do CEP
+    via_cep_url = f"https://viacep.com.br/ws/{cep}/json/"
 
-    try:
+    try:        
+        viacep_response = requests.get(via_cep_url)
+        viacep_data = viacep_response.json()
+
+        if "erro" in viacep_data:
+            error_msg = "CEP inválido :/"
+            return {"message": error_msg}, 400
+
+        # Atualizando o objeto Cfc com os dados da API ViaCEP
+        cfc.logradouro = viacep_data.get("logradouro", "")
+        cfc.complemento = viacep_data.get("complemento", "")
+        cfc.bairro = viacep_data.get("bairro", "")
+        cfc.localidade = viacep_data.get("localidade", "")
+        cfc.uf = viacep_data.get("uf", "")
+        cfc.ibge = viacep_data.get("ibge", "")
+        cfc.gia = viacep_data.get("gia", "")
+        cfc.ddd = viacep_data.get("ddd", "")
+        cfc.siafi = viacep_data.get("siafi", "")        
         # efetuando a atualização no banco de dados
         session.commit()
         # retornando a representação atualizada da cfc
         return apresenta_cfc(cfc), 200
+    
+    except requests.RequestException as e:
+        # caso ocorra algum erro na requisição para a API ViaCEP
+        error_msg = "Erro ao consultar o CEP na API ViaCEP :/"
+        return {"message": error_msg, "details": str(e)}, 400    
 
     except Exception as e:
         # caso ocorra algum erro durante a atualização

@@ -10,3 +10,4 @@ typing_extensions==4.3.0
 Werkzeug==2.2.2
 pydantic
 Pylance
+requests
