@@ -101,6 +101,9 @@ Uma vez executando, para acessar a API, basta abrir o [http://localhost:5000/#/]
 >
 > Caso queira **destruir um conatiner**, basta executar o comando:
 >```
+
+![image](https://github.com/ronanrj/ProjetoMvpBackEndApiDocker/assets/20301129/f7f8b3ca-8f5a-4ec4-b57c-2a282ff37585)
+
 >$ docker rm <CONTAINER ID>
 >```
 >Para mais comandos, veja a [documentação do docker](https://docs.docker.com/engine/reference/run/).
