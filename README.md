@@ -33,7 +33,7 @@ URL: viacep.com.br/ws/01001000/json/
       "siafi": "7107"
     }
             
-
+## Pode se ver a cadastro / alteração pelo backend no CFC metodos GET - /cfc/{codigo} 
 
 ![image](https://github.com/ronanrj/ProjetoMvpBackEndApiDocker/assets/20301129/7ddb1d4e-1155-41bc-bdd1-95a013510329)
 
