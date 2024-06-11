@@ -2,8 +2,10 @@
 ProjetoMVP backEnd API - Este projeto faz parte da entrega para conclusão do mvp da sprint Arquitetura de Software do curso de pós graduação da PUC RIO.
 
 O objetivo do projeto é um cadastro simples de auto escolas com relacionamento de carros e instrutores em uma base de dados sqlite e a contenerização utilizando docker.
+A Api backend , quando solicitada pelos metodos POST e PUT , realiza uma conexão http-get , passando um cep válido, para a API externa ViaCEP (https://viacep.com.br/) , retornando o endereço completo e atualizando no banco de dados sqlite.
 
-![image](https://github.com/ronanrj/ProjetoMvpBackEndApiDocker/assets/20301129/aa2a7fc3-aa3c-4303-8e75-260a8236a76b)
+![image](https://github.com/ronanrj/ProjetoMvpBackEndApiDocker/assets/20301129/7ddb1d4e-1155-41bc-bdd1-95a013510329)
+
 
 
 ---
