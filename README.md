@@ -3,7 +3,7 @@ ProjetoMVP backEnd API - Este projeto faz parte da entrega para conclusão do mv
 
 O objetivo do projeto é um cadastro simples de auto escolas com relacionamento de carros e instrutores em uma base de dados sqlite e a contenerização utilizando docker.
 A Api backend , quando solicitada pelos metodos POST e PUT , realiza uma conexão http-get , passando um cep válido, para a API externa ViaCEP (https://viacep.com.br/) , retornando o endereço completo e atualizando no banco de dados sqlite.
-Pode se ver a cadastro / alteração pelo backend no CFC metodos GET - /cfc/{codigo} 
+
 Foi utilizado o viaCEP da seguinte forma.
 
 Acessando o webservice de CEP
